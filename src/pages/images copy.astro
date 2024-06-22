@@ -1,0 +1,94 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="container">
+    <h2>Image List</h2>
+    <form 
+      hx-ext="client-side-templates"
+      hx-trigger="submit" 
+      hx-get="/api/collections/images/records?page=1&perPage=10&filter=user='r895rz5fvckwe6a'&sort=-created"
+      hx-target="#image-list" 
+      hx-swap="innerHTML"
+      nunjucks-template="images-template"
+    >
+      <button type="submit" class="btn btn-primary">Fetch Images</button>
+    </form>
+    <div id="image-list">
+      <!-- Image data will be displayed here -->
+    </div>
+  </div>
+
+  <template id="image-template">
+    {{#data.items}}
+    <div class="image-item">
+      <img src="http://127.0.0.1:8090/api/files/{{collectionId}}/{{id}}/{{image}}" alt="{{image}}" data-id="{{id}}" onclick="showImageInModal(this)">
+      <div>
+        <p><strong>Uploaded by:</strong> {{user}}</p>
+        <p><strong>Upload Date:</strong> {{created}}</p>
+      </div>
+    </div>
+    <hr>
+    {{/data.items}}
+  </template>
+
+  <dialog id="imageModal" class="modal">
+    <article>
+      <header>
+        <h3>Image Details</h3>
+        <button aria-label="Close" rel="prev" onclick="toggleModal(event)">&times;</button>
+      </header>
+      <img id="modalImage" src="" alt="" style="max-width: 100%;">
+      <p id="modalDetails"></p>
+      <footer>
+        <button role="button" class="secondary" onclick="toggleModal(event)">Close</button>
+      </footer>
+    </article>
+  </dialog>
+
+  <script>
+    // Add authorization header to all HTMX requests
+    document.addEventListener('htmx:configRequest', (event) => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        event.detail.headers['Authorization'] = 'Bearer ' + token;
+      }
+    });
+
+    // Re-evaluate scripts in the loaded content
+    document.addEventListener('htmx:afterSwap', (event) => {
+      event.detail.target.querySelectorAll('script').forEach((script) => {
+        const newScript = document.createElement('script');
+        newScript.text = script.text;
+        document.head.appendChild(newScript).parentNode.removeChild(newScript);
+      });
+    });
+
+    // Function to show image in modal
+    function showImageInModal(element) {
+      const modal = document.getElementById('imageModal');
+      const modalImage = document.getElementById('modalImage');
+      const modalDetails = document.getElementById('modalDetails');
+      
+      modalImage.src = element.src;
+      modalImage.alt = element.alt;
+      modalDetails.textContent = element.alt;
+      
+      openModal(modal);
+    }
+
+    function toggleModal(event) {
+      const modal = event.target.closest('.modal');
+      if (modal.open) {
+        modal.close();
+      } else {
+        modal.showModal();
+      }
+    }
+
+    function openModal(modal) {
+      modal.showModal();
+    }
+  </script>
+</BaseLayout>

@@ -1,0 +1,31 @@
+// src/styles/theme.scss
+
+@import 'variables';
+
+// Light theme
+[data-bs-theme="light"] {
+  --bs-body-bg: #{$body-bg-light};
+  --bs-body-color: #{$body-color-light};
+  --bs-primary: #{$primary-light};
+  --bs-secondary: #{$secondary-light};
+  --bs-success: #{$success-light};
+  --bs-info: #{$info-light};
+  --bs-warning: #{$warning-light};
+  --bs-danger: #{$danger-light};
+  --bs-light: #{$light-light};
+  --bs-dark: #{$dark-light};
+}
+
+// Dark theme
+[data-bs-theme="dark"] {
+  --bs-body-bg: #{$body-bg-dark};
+  --bs-body-color: #{$body-color-dark};
+  --bs-primary: #{$primary-dark};
+  --bs-secondary: #{$secondary-dark};
+  --bs-success: #{$success-dark};
+  --bs-info: #{$info-dark};
+  --bs-warning: #{$warning-dark};
+  --bs-danger: #{$danger-dark};
+  --bs-light: #{$light-dark};
+  --bs-dark: #{$dark-dark};
+}

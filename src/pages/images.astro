@@ -1,0 +1,36 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout>
+  <div class="container">
+    <h2>Image List</h2>
+    <form 
+      id="fetchImagesForm"
+      hx-ext="client-side-templates"
+      hx-trigger="submit" 
+      hx-get="/api/collections/images/records?page=1&perPage=10&filter=user='r895rz5fvckwe6a'&sort=-created"
+      hx-target="#image-list" 
+      hx-swap="innerHTML"
+    >
+      <button type="submit" class="btn btn-primary">Fetch Images</button>
+    </form>
+    <div id="image-list">
+      <!-- Server response will be displayed here -->
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('htmx:configRequest', (event) => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        event.detail.headers['Authorization'] = 'Bearer ' + token;
+      }
+    });
+
+    document.addEventListener('htmx:afterSwap', (event) => {
+      const imageList = document.getElementById('image-list');
+      imageList.innerText = event.detail.xhr.responseText;
+    });
+  </script>
+</BaseLayout>
